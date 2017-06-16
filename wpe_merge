@@ -7,6 +7,7 @@ import sys
 from import_data import Import_CSV
 from remote_data import Remote_Database
 from export_data import Export_CSV
+
 if __name__ == '__main__':
     args = sys.argv[1:]
     input_file = args[0]
@@ -15,9 +16,11 @@ if __name__ == '__main__':
     if '-h' in args:
        print 'usage: wpe_merge <input_file> <output_file>'
        print 'optional: -v Verbose'
+       sys.exit(0) #Help shouldn't execute
     if '--help' in args:
        print 'usage: wpe_merge <input_file> <output_file>'
        print 'optional: --verbose Verbose'
+       sys.exit(0) #Help shouldn't execute
     if '-v' in args:
         verbose = True
     if '--verbose' in args:
