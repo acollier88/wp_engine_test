@@ -13,20 +13,45 @@ if __name__ == '__main__':
     input_file = args[0]
     output_file = args[1]
     verbose = False
+    strict = 0
     if '-h' in args:
-       print 'usage: wpe_merge <input_file> <output_file>'
-       print 'optional: -v Verbose'
-       sys.exit(0) #Help shouldn't execute
+        print 'usage: wpe_merge <input_file> <output_file>'
+        print 'optional: -v Verbose'
+        print 'optional: -s Strictness of Import requirements'
+        print '             0 : Skip Missing Account ID Rows [Default]'
+        print '             1 : Strict 0 + Skip any rows with missing data'
+        print '             2 : Strict 1 + End Import on Missing Account ID'
+        print '             3 : End Import on any missing information'
+        sys.exit(0) #Help shouldn't execute
     if '--help' in args:
-       print 'usage: wpe_merge <input_file> <output_file>'
-       print 'optional: --verbose Verbose'
-       sys.exit(0) #Help shouldn't execute
+        print 'usage: wpe_merge <input_file> <output_file>'
+        print 'optional: --verbose Verbose'
+        print 'optional: --strict Strictness of Import requirements'
+        print '             0 : Skip Missing Account ID Rows [Default]'
+        print '             1 : Strict 0 + Skip any rows with missing data'
+        print '             2 : Strict 1 + End Import on Missing Account ID'
+        print '             3 : End Import on any missing information'
+        sys.exit(0) #Help shouldn't execute
     if '-v' in args:
         verbose = True
     if '--verbose' in args:
         verbose = True
+    if '-s' in args:
+        index = args.index('-s')
+        if index < (len(args)-1):
+            try:
+                strict = int(args[index+1])
+            except:
+                strict = 0
+    if '--strict' in args:
+        index = args.index('--strict')
+        if index < (len(args) - 1):
+            try:
+                strict = int(args[index+1])
+            except:
+                strict = 0
     input_csv = Import_CSV(input_file)
-    input_csv.import_account_csv(verbose=verbose)
+    input_csv.import_account_csv(verbose=verbose, strict=strict)
     
     remote_host = Remote_Database('http://interview.wpengine.io')
     updated_list = remote_host.update_information(input_csv.csv_data,
