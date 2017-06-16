@@ -1,0 +1,33 @@
+#!/usr/bin/python2.7
+
+import getopt
+import os
+import sys
+
+from import_data import Import_CSV
+from remote_data import Remote_Database
+from export_data import Export_CSV
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    input_file = args[0]
+    output_file = args[1]
+    verbose = False
+    if '-h' in args:
+       print 'usage: wpe_merge <input_file> <output_file>'
+       print 'optional: -v Verbose'
+    if '--help' in args:
+       print 'usage: wpe_merge <input_file> <output_file>'
+       print 'optional: --verbose Verbose'
+    if '-v' in args:
+        verbose = True
+    if '--verbose' in args:
+        verbose = True
+    input_csv = Import_CSV(input_file)
+    input_csv.import_account_csv(verbose=verbose)
+    
+    remote_host = Remote_Database('http://interview.wpengine.io')
+    updated_list = remote_host.update_information(input_csv.csv_data,
+                                                  verbose=verbose)
+
+    output_csv = Export_CSV(output_file)
+    output_csv.export_from_list(updated_list, verbose=verbose)
